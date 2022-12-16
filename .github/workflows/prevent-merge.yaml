@@ -1,0 +1,29 @@
+name: Do Not Merge
+
+on:
+  pull_request:
+    types: [synchronize, opened, reopened, labeled, unlabeled]
+
+jobs:
+  do-not-merge:
+    if: ${{ contains(github.event.*.labels.*.name, 'blocked') }}
+    name: Prevent Merging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for label
+        run: |
+          echo "Pull request is labeled as 'blocked'"
+          echo "This workflow fails so that the pull request cannot be merged"
+          exit 1
+      - name: Message on fail
+        if: failure()
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Pull request is currently blocked by labels'
+            })
