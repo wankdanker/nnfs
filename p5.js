@@ -1,15 +1,7 @@
 const X = [
-    [0, 0],
-    [0, 1],
-    [1, 0],
-    [0, 1]
-]
-
-const T = [
-    0,
-    1,
-    1,
-    0
+    [1, 2, 3, 2.5],
+    [2.0, 5.0, -1.0, 2.0],
+    [-1.5, 2.7, 3.3, -0.8]
 ]
 
 class LayerDense {
@@ -27,35 +19,21 @@ class ActivationReLU {
     forward(inputs) {
         this.output = max(0, inputs)
     }
-
-    derivative (x) {
-        // Relu Derivative is 1 for x >= 0 and 0 for x < 0
-        return x >= 0 ? 1 : 0
-    }
 }
 
 // console.log(mArray([4, 3], () => Math.random()))
 // console.log(new LayerDense(4, 3))
 
-const layer1 = new LayerDense(2, 5)
-const layer2 = new LayerDense(5, 1)
+const layer1 = new LayerDense(4, 5)
+const layer2 = new LayerDense(5, 2)
 const activation1 = new ActivationReLU()
 const activation2 = new ActivationReLU()
 
 layer1.forward(X)
 activation1.forward(layer1.output)
-// console.log(activation1.output)
+console.log(activation1.output)
 layer2.forward(activation1.output)
-activation2.forward(layer2.output)
-console.log(activation2.output)
-
-let error = 0
-for (let x = 0; x < activation2.output.length; x += 1) {
-    error += Math.pow(T[x] - activation2.output[x], 2) * .5
-}
-console.log(error)
-
-
+// console.log(layer2.output)
 
 function dot(m1, m2) {
     //TODO: check matching shape
